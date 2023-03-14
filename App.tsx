@@ -11,6 +11,8 @@ import axiosInterceptor from './src/utils/axios.config';
 import {DataProvider} from './src/hooks';
 import AppNavigation from './src/navigation/App';
 
+// import './assets/index.scss'
+
 axiosInterceptor();
 
 SplashScreen.preventAutoHideAsync();

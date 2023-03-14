@@ -6,59 +6,64 @@ import {useData, useTheme, useTranslation} from '../hooks/';
 import * as regex from '../constants/regex';
 import {Block, Button, Input, Image, Text, Checkbox} from '../components/';
 import BG from '../assets/images/loginbg.png';
-import { useDispatch } from 'react-redux';
-import { loginSuccess } from '../redux/reducers/authReducer';
+import {useDispatch} from 'react-redux';
+import {loginSuccess} from '../redux/reducers/authReducer';
 
 const isAndroid = Platform.OS === 'android';
 
 const Login = () => {
-  const {isDark} = useData();
   const {t} = useTranslation();
+
   const navigation = useNavigation();
-  const [isValid, setIsValid] = useState({
-    name: false,
-    email: false,
-    password: false,
-    agreed: false,
-  });
-  const [registration, setRegistration] = useState({
-    name: '',
-    email: '',
-    password: '',
-    agreed: false,
+
+  const [formValues, setFormValues] = useState({
+    username: {
+      value: '',
+      isValid: false,
+      message: 'Tài khoản/SDT không hợp lệ',
+    },
+    password: {
+      value: '',
+      isValid: false,
+      message: 'Mật khẩu không hợp lệ',
+    },
   });
   const {assets, colors, gradients, sizes} = useTheme();
 
-  const dispatch = useDispatch()
-  
-
-  const handleChange = useCallback(
-    (value) => {
-      setRegistration((state) => ({...state, ...value}));
-    },
-    [setRegistration],
-  );
-
-//   const handleSignUp = useCallback(() => {
-//     if (!Object.values(isValid).includes(false)) {
-//       /** send/save registratin data */
-//       console.log('handleSignUp', registration);
-//     }
-//   }, [isValid, registration]);
-
-  function handleSignUp(){
-    dispatch(loginSuccess())
+  function checkValidByFieldAndValue(field, value) {
+    let test = {
+      username: regex.username.test(value),
+      password: regex.password.test(value),
+    };
+    return test[field];
   }
 
-  useEffect(() => {
-    setIsValid((state) => ({
-      ...state,
-      name: regex.name.test(registration.name),
-      email: regex.email.test(registration.email),
-      password: regex.password.test(registration.password),
-      agreed: registration.agreed,
-    }));
-  }, [registration, setIsValid]);
+  function checkFormValid(formValues) {
+    let isValid = true;
+    Object.keys(formValues).forEach((key) => {
+      if (!formValues[key].isValid) {
+        isValid = false;
+      }
+    });
+    return isValid;
+  }
+
+  function handleChangeField(field, value) {
+    console.log(field, value);
+    let isValid = checkValidByFieldAndValue(field, value);
+    let newFormValues = {...formValues};
+    newFormValues[field] = {value: value, isValid: isValid};
+    setFormValues({...newFormValues});
+  }
+
+  const dispatch = useDispatch();
+
+  function handleSignUp() {
+    let isFormValid = checkFormValid(formValues);
+    if (isFormValid) {
+      dispatch(loginSuccess());
+    }
+  }
 
   return (
     <View style={{flex: 1}}>
@@ -114,9 +119,13 @@ const Login = () => {
               marginBottom={36}
               label="Tài khoản/SĐT"
               placeholder="Tài khoản/SĐT..."
-              success={Boolean(registration.name && isValid.name)}
-              danger={Boolean(registration.name && !isValid.name)}
-              onChangeText={(value) => handleChange({name: value})}
+              success={Boolean(
+                formValues.username.value && formValues.username.isValid,
+              )}
+              danger={Boolean(
+                formValues.username.value && !formValues.username.isValid,
+              )}
+              onChangeText={(value) => handleChangeField('username', value)}
             />
             <Input
               autoCapitalize="none"
@@ -124,19 +133,22 @@ const Login = () => {
               label="Mật khẩu"
               keyboardType="email-address"
               placeholder="Mật khẩu..."
-              success={Boolean(registration.email && isValid.email)}
-              danger={Boolean(registration.email && !isValid.email)}
-              onChangeText={(value) => handleChange({email: value})}
+              success={Boolean(
+                formValues.password.value && formValues.password.isValid,
+              )}
+              danger={Boolean(
+                formValues.password.value && !formValues.password.isValid,
+              )}
+              onChangeText={(value) => handleChangeField('password', value)}
             />
-            <Button 
+            <Button
               gradient={gradients.black}
               marginBottom={14}
-              onPress={e=>{
-                console.log(`Handle loggin`)
-                handleSignUp()
+              onPress={(e) => {
+                handleSignUp();
               }}
-            //   disabled={Object.values(isValid).includes(false)}
-              >
+              //   disabled={Object.values(isValid).includes(false)}
+            >
               <Text bold white transform="uppercase">
                 Đăng nhập
               </Text>

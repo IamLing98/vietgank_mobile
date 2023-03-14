@@ -24,7 +24,24 @@ const Home = ({navigation}) => {
 
   const [saleOffs, setSaleOffs] = useState([]);
 
-  const tabs = ['Shopping', 'Original', 'Kids', 'Glamping', 'Beach'];
+  const tabs = [
+    {
+      title: 'Shopping',
+      path: 'Shopping',
+    },
+    {
+      title: 'Horse Club',
+      path: 'Horse Club',
+    },
+    {
+      title: 'Beach Club',
+      path: 'Beach Club',
+    },
+    {
+      title: 'Glamping Club',
+      path: 'Glamping Club',
+    },
+  ];
 
   const handleProducts = useCallback(
     (tab) => {
@@ -43,7 +60,29 @@ const Home = ({navigation}) => {
     text: {
       fontSize: 42,
     },
+    touchAble:{
+      paddingTop: 8,
+      paddingBottom: 8,
+      paddingLeft: 8,
+      paddingRight: 8,
+      borderRadius: 20,
+      marginRight: 24,
+    }
   });
+
+  const [active, setActive] = useState();
+
+  const handleNavigation = useCallback(
+    (to) => {
+      setActive(to);
+      navigation.navigate(to);
+    },
+    [navigation, setActive],
+  );
+
+  async function fetchDetail(_id) {
+    axios.get(``);
+  }
 
   async function getProducts() {
     setProducts(PRODUCTS);
@@ -72,7 +111,7 @@ const Home = ({navigation}) => {
   return (
     <Block style={{paddingTop: 36}}>
       {/* search input */}
-      <Block color={colors.card} flex={0} >
+      <Block color={colors.card} flex={0}>
         <Image style={{height: 64, width: '100%'}} source={HorseClub} />
       </Block>
 
@@ -101,16 +140,9 @@ const Home = ({navigation}) => {
                 <TouchableHighlight
                   activeOpacity={0.6}
                   underlayColor="#DDDDDD"
-                  style={{
-                    paddingTop: 8,
-                    paddingBottom: 8,
-                    paddingLeft: 8,
-                    paddingRight: 8,
-                    borderRadius: 20,
-                    marginRight: 24,
-                  }}
+                  style={styles.touchAble}
                   key={`touch-home-index-` + index}
-                  onPress={() => console.log('Pressed!')}>
+                  onPress={() => handleNavigation(item.path)}>
                   <View style={{flexDirection: 'column'}}>
                     <View
                       style={{
@@ -124,7 +156,7 @@ const Home = ({navigation}) => {
                         source={HorseClub}
                       />
                     </View>
-                    <Text style={{textAlign: 'center'}}>{item}</Text>
+                    <Text style={{textAlign: 'center'}}>{item.title}</Text>
                   </View>
                 </TouchableHighlight>
               );

@@ -10,7 +10,13 @@ import Home from '../screens/Home';
 import PlaceDetail from '../screens/PlaceDetail';
 import Booking from '../screens/Booking';
 import ProductDetail from '../screens/Product/ProductDetail';
+import HorseClub from '../screens/HorseClub';
 import Login from '../screens/Login';
+import Account from '../screens/Account';
+
+// Horse club page
+import HorseClubDetail from '../screens/HorseClub/Detail';
+import ServiceDetail from '../screens/HorseClub/ServiceDetail';
 
 const Stack = createStackNavigator();
 
@@ -55,20 +61,6 @@ function HomeStack() {
         options={{
           headerShown: false,
         }}
-      />
-      <Stack.Screen
-        name="Horse Club"
-        options={{
-          tabBarLabel: 'Trang chủ',
-        }}
-        component={PlaceDetail}
-      />
-      <Stack.Screen
-        name="ProductDetail"
-        options={{
-          title: 'Chi tiết sản phẩm',
-        }}
-        component={ProductDetail}
       />
       <Stack.Screen name="Đặt lịch" component={Booking} />
     </Stack.Navigator>
@@ -145,10 +137,56 @@ function MainStack() {
           ),
           headerShown: false,
         }}
-        name="Tài khoản"
-        component={Inbox}
+        name="Account"
+        component={Account}
       />
     </Tab.Navigator>
+  );
+}
+
+function HomeStackMain() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Home"
+        options={{
+          headerShown: false,
+        }}
+        component={MainStack}
+      />
+      <Stack.Screen
+        name="Horse Club"
+        options={{
+          headerShown: false,
+          title: 'Vietgangz Horse Club', 
+        }}
+        component={HorseClub}
+      />
+      <Stack.Screen
+        name="ServiceDetail"
+        options={{
+          headerShown: false,
+          title: 'Vietgangz Horse Club',
+          gestureEnabled: true,
+        }}
+        component={ServiceDetail}
+      />
+      <Stack.Screen
+        name="Horse Club Detail"
+        options={{
+          headerShown: false,
+          title: 'Vietgangz Horse Club', 
+        }}
+        component={HorseClubDetail}
+      />
+      <Stack.Screen
+        name="ProductDetail"
+        options={{
+          title: 'Chi tiết sản phẩm',
+        }}
+        component={ProductDetail}
+      />
+    </Stack.Navigator>
   );
 }
 
@@ -167,7 +205,8 @@ export default function App() {
   return (
     <>
       <NavigationContainer theme={MyTheme}>
-        {authReducer.isAuth ? <MainStack /> : <AuthStack />}
+        {/* <AuthStack /> */}
+        {authReducer.isAuth ? <HomeStackMain /> : <AuthStack />}
       </NavigationContainer>
     </>
   );
