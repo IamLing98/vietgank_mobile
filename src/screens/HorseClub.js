@@ -27,6 +27,7 @@ const HorseClub = ({navigation}) => {
       services: [
         {
           name: 'Trải nghiệm tham quan tiệc BBQ',
+          description: `<p>html</p>`
         },
         {
           name: 'Trải nghiệm tham quan trong ngày',
@@ -105,9 +106,10 @@ const HorseClub = ({navigation}) => {
 
   async function getTenants() {
     let data = axios
-      .get('/')
+      .get('/booking?booking_type_code=HORSE_CLUB')
       .then((response) => {
-        setTenants(PRODUCTS);
+        console.log(`response`, response.data)
+        // setTenants(PRODUCTS);
       })
       .catch((error) => {
         console.error(error);

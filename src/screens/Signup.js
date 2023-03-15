@@ -11,7 +11,7 @@ import {loginSuccess} from '../redux/reducers/authReducer';
 
 const isAndroid = Platform.OS === 'android';
 
-const Login = () => {
+const Signup = () => {
   const {t} = useTranslation();
 
   const navigation = useNavigation();
@@ -27,13 +27,18 @@ const Login = () => {
       isValid: false,
       message: 'Mật khẩu không hợp lệ',
     },
+    confirmPassword: {
+      value: '',
+      isValid: false,
+      message: 'Xác minh mật khẩu không hợp lệ',
+    },
   });
   const {assets, colors, gradients, sizes} = useTheme();
 
   function checkValidByFieldAndValue(field, value) {
     let test = {
       username: regex.username.test(value),
-      password: regex.password.test(value),
+      password: regex.password.test(value), 
     };
     return test[field];
   }
@@ -87,7 +92,7 @@ const Login = () => {
           <View
             style={{backgroundColor: 'white', padding: 24, borderRadius: 8}}>
             <Text p bold center>
-              Đăng nhập
+              Đăng ký tài khoản
             </Text>
             <Block
               row
@@ -117,8 +122,9 @@ const Login = () => {
             <Input
               autoCapitalize="none"
               marginBottom={36}
-              label="Tài khoản/SĐT"
-              placeholder="Tài khoản/SĐT..."
+              label="Số điện thoại"
+              placeholder="Số điện thoại..."
+            
               success={Boolean(
                 formValues.username.value && formValues.username.isValid,
               )}
@@ -129,7 +135,7 @@ const Login = () => {
             />
             <Input
               autoCapitalize="none"
-              marginBottom={58}
+              marginBottom={36}
               label="Mật khẩu"
               keyboardType="email-address"
               placeholder="Mật khẩu..."
@@ -141,6 +147,20 @@ const Login = () => {
               )}
               onChangeText={(value) => handleChangeField('password', value)}
             />
+             <Input
+              autoCapitalize="none"
+              marginBottom={58}
+              label="Nhập lại mật khẩu"
+              keyboardType="email-address"
+              placeholder="Nhập lại mật khẩu..."
+              success={Boolean(
+                formValues.confirmPassword.value && formValues.confirmPassword.isValid,
+              )}
+              danger={Boolean(
+                formValues.confirmPassword.value && !formValues.confirmPassword.isValid,
+              )}
+              onChangeText={(value) => handleChangeField('confirmPassword', value)}
+            />
             <Button
               gradient={gradients.black}
               marginBottom={14}
@@ -150,16 +170,16 @@ const Login = () => {
               //   disabled={Object.values(isValid).includes(false)}
             >
               <Text bold white transform="uppercase">
-                Đăng nhập
+                Đăng ký
               </Text>
             </Button>
             <Button
               primary
               outlined
               shadow={!isAndroid}
-              onPress={() => navigation.navigate('Signup')}>
+              onPress={() => navigation.navigate('Login')}>
               <Text bold primary transform="uppercase">
-                Đăng ký
+                Quay lại đăng nhập
               </Text>
             </Button>
           </View>
@@ -169,4 +189,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Signup;

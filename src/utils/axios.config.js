@@ -1,9 +1,9 @@
 import axios from 'axios';
-import {BASE_URL} from '../constants';
+import {BASE_URL, TOKEN} from '../constants';
 
 function axiosInterceptor() {
   axios.defaults.baseURL = BASE_URL;
-
+  axios.defaults.headers.common["Authorization"] = `Bearer ${TOKEN}`
   axios.interceptors.request.use(
     function (config) {
       // Do something before request is sent

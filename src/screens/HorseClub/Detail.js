@@ -20,24 +20,9 @@ import HorseClubImg from '../../assets/images/horse_club_item.png';
 import {useDispatch} from 'react-redux';
 import {logout} from '../../redux/reducers/authReducer';
 
-const HorseClubDetail = ({route, navigation}) => {
-  /* 2. Get the param */
-  const tenant = route.params;
-
-  const [tenants, setTenants] = useState([
-    {
-      name: 'Vietgangz Horse Sài Gòn',
-    },
-    {
-      name: 'Vietgangz Horse Hà Nội',
-    },
-    {
-      name: 'Vietgangz Horse Đà Nẵng',
-    },
-    {
-      name: 'Vietgangz Horse Thanh Hóa',
-    },
-  ]);
+const HorseClubDetail = ({route, navigation}) => { 
+  
+  const tenant = route.params; 
 
   const dispatch = useDispatch();
 
@@ -87,13 +72,13 @@ const HorseClubDetail = ({route, navigation}) => {
   });
 
   const handleNavigation = useCallback(
-    (to) => {
-      navigation.navigate(to);
+    (to,item) => {
+      navigation.navigate(to,item);
     },
     [navigation],
   );
 
-  function handleSelectService(item) {
+  function handleSelectService(item) { 
     handleNavigation('ServiceDetail', item);
   }
 
