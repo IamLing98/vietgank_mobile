@@ -111,7 +111,7 @@ const HorseClubDetail = ({route, navigation}) => {
   return (
     <Block style={{paddingTop: 36, backgroundColor: 'white'}}>
       <Text h4 style={styles.welcomeText}>
-        Chào mừng bạn đến với {tenant.name} !
+        Chào mừng bạn đến với {tenant?.booking_info?.name} !
       </Text>
       <View style={styles.container}>
         <SafeAreaView style={styles.container}>
@@ -136,7 +136,7 @@ const HorseClubDetail = ({route, navigation}) => {
                       style={styles.itemBackground}>
                       <View style={styles.itemView}>
                         <Text color="white" h5 style={styles.itemText}>
-                          {item.name?.toUpperCase()}
+                          {item?.service_info?.name?.toUpperCase()}
                         </Text>
                       </View>
                     </ImageBackground>

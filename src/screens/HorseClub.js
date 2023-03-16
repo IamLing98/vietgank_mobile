@@ -1,5 +1,5 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {TouchableHighlight} from 'react-native-gesture-handler';
+import React, { useCallback, useEffect, useState } from 'react';
+import { TouchableHighlight } from 'react-native-gesture-handler';
 import {
   View,
   SafeAreaView,
@@ -7,20 +7,21 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  Image
 } from 'react-native';
 
 import axios from 'axios';
-import {Divider, List} from 'react-native-paper';
+import { Divider, List } from 'react-native-paper';
 
-import {useData, useTheme, useTranslation} from '../hooks';
-import {Block, Button, Image, Input, Product, Text} from '../components';
+import { useData, useTheme, useTranslation } from '../hooks';
+import { Block, Button, Input, Product, Text } from '../components';
 
-import {PRODUCTS, SALE_OFF} from '../constants/mocks';
+import { PRODUCTS, SALE_OFF } from '../constants/mocks';
 import HorseClubImg from '../assets/images/horse_club_item.png';
-import {useDispatch} from 'react-redux';
-import {logout} from '../redux/reducers/authReducer';
+import { useDispatch } from 'react-redux';
+import { logout } from '../redux/reducers/authReducer';
 
-const HorseClub = ({navigation}) => {
+const HorseClub = ({ navigation }) => {
   const [tenants, setTenants] = useState([
     {
       name: 'Vietgangz Horse Sài Gòn',
@@ -108,8 +109,8 @@ const HorseClub = ({navigation}) => {
     let data = axios
       .get('/booking?booking_type_code=HORSE_CLUB')
       .then((response) => {
-        console.log(`response`, response.data)
-        // setTenants(PRODUCTS);
+        setTenants(response?.data?.data);
+        console.log(JSON.stringify(response?.data?.data))
       })
       .catch((error) => {
         console.error(error);
@@ -120,7 +121,7 @@ const HorseClub = ({navigation}) => {
     setSaleOffs(SALE_OFF);
     let data = axios
       .get('/')
-      .then((response) => {})
+      .then((response) => { })
       .catch((error) => {
         console.error(error);
       });
@@ -131,7 +132,7 @@ const HorseClub = ({navigation}) => {
   }, []);
 
   return (
-    <Block style={{paddingTop: 36, backgroundColor: 'white'}}>
+    <Block style={{ paddingTop: 36, backgroundColor: 'white' }}>
       <Text h5 style={styles.guideText}>
         Cùng khám phá:
       </Text>
@@ -151,9 +152,9 @@ const HorseClub = ({navigation}) => {
                   }}>
                   <Block style={styles.itemWrapper}>
                     <View style={styles.itemList}>
-                      <Image style={styles.itemImage} source={HorseClubImg} />
+                      <Image style={styles.itemImage} src={item?.booking_info?.thumbnail} />
                       <Text h5 style={styles.itemText}>
-                        {item.name}
+                        {item?.booking_info?.name}
                       </Text>
                     </View>
                   </Block>

@@ -215,12 +215,12 @@ const ChooseSeat = ({ navigation, route }) => {
                     mode="contained"
                     onPress={() => {
                         navigation.goBack();
-                    }}>
+                    }}>    
                     QUAY LẠI
                 </Button>
             </Block>
         </Block>
-    );
+    );0
 };
 
 export default ChooseSeat;
