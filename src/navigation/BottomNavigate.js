@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createStackNavigator } from '@react-navigation/stack';
-import { Ionicons } from '@expo/vector-icons';
-import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
-import { useSelector } from 'react-redux';
+import {StyleSheet, Text, View} from 'react-native';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createStackNavigator} from '@react-navigation/stack';
+import {Ionicons} from '@expo/vector-icons';
+import {NavigationContainer, DefaultTheme} from '@react-navigation/native';
+import {useSelector} from 'react-redux';
 
 import Home from '../screens/Home';
 import PlaceDetail from '../screens/PlaceDetail';
@@ -19,17 +19,17 @@ import ServiceDetail from '../screens/HorseClub/ServiceDetail';
 import ChooseSeat from '../screens/HorseClub/ChooseSeat';
 
 // Auth
-import Signup from '../screens/Signup';
-import Login from '../screens/Login';
+import Signup from '../screens/Auth/Signup';
+import Login from '../screens/Auth/Login';
+import OTPVerify from '../screens/Auth/OTPVerify';
 
-import { Card } from '@rneui/themed';
-
+import {Card} from '@rneui/themed';
 
 const Stack = createStackNavigator();
 
 function Activities() {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <Text size={12} semibold>
         Hoạt động
       </Text>
@@ -39,7 +39,7 @@ function Activities() {
 
 function Sale() {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <Text>Ưu đãi của tôi</Text>
     </View>
   );
@@ -47,7 +47,7 @@ function Sale() {
 
 function Inbox() {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <Text>Tin nhắn</Text>
     </View>
   );
@@ -91,6 +91,13 @@ function AuthStack() {
         }}
         component={Signup}
       />
+      <Stack.Screen
+        name="OTPVerify"
+        options={{
+          headerShown: false,
+        }}
+        component={OTPVerify}
+      />
     </Stack.Navigator>
   );
 }
@@ -103,7 +110,7 @@ function MainStack() {
         component={HomeStack}
         options={{
           tabBarLabel: 'Trang chủ',
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: ({color, size}) => (
             <Ionicons name="home" color={color} size={size} />
           ),
           headerShown: false,
@@ -114,7 +121,7 @@ function MainStack() {
         component={Activities}
         options={{
           tabBarLabel: 'Hoạt động',
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: ({color, size}) => (
             <Ionicons name="magnet-outline" color={color} size={size} />
           ),
           headerShown: false,
@@ -125,7 +132,7 @@ function MainStack() {
         component={Sale}
         options={{
           tabBarLabel: 'Ưu đãi của tôi',
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: ({color, size}) => (
             <Ionicons name="gift-outline" color={color} size={size} />
           ),
           headerShown: false,
@@ -134,7 +141,7 @@ function MainStack() {
       <Tab.Screen
         options={{
           tabBarLabel: 'Tin nhắn',
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: ({color, size}) => (
             <Ionicons name="mail-outline" color={color} size={size} />
           ),
           tabBarBadge: 3,
@@ -146,7 +153,7 @@ function MainStack() {
       <Tab.Screen
         options={{
           tabBarLabel: 'Tài khoản',
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: ({color, size}) => (
             <Ionicons name="person-circle-outline" color={color} size={size} />
           ),
           headerShown: false,
@@ -160,7 +167,7 @@ function MainStack() {
 
 function HomeStackMain() {
   return (
-    <Stack.Navigator  >
+    <Stack.Navigator>
       <Stack.Screen
         name="Home"
         options={{
@@ -194,7 +201,7 @@ function HomeStackMain() {
         component={ServiceDetail}
       />
 
-<Stack.Screen
+      <Stack.Screen
         name="Booking"
         options={{
           headerShown: false,
