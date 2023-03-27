@@ -6,114 +6,211 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
+  ImageBackground,
+  ScrollView,
+  Image,
 } from 'react-native';
-import {BaseStyle, useTheme} from '@config';
-import {Header, SafeAreaView, Icon, Text, Button, TextInput} from '@components';
+import {BaseStyle, useTheme, Images} from '../../config';
+import {
+  Header,
+  SafeAreaView,
+  Icon,
+  Text,
+  Button,
+  TextInput,
+} from '../../components';
 import styles from './styles';
 import {useTranslation} from 'react-i18next';
 
+import axios from 'axios';
+import {getFormValues, regex} from '../../utils/data.utils';
+
 export default function SignIn({navigation}) {
   const {colors} = useTheme();
-  const {t} = useTranslation();
+
+  const [error, setError] = useState('');
+
   const dispatch = useDispatch();
+
   const offsetKeyboard = Platform.select({
     ios: 0,
     android: 20,
   });
 
-  const [id, setId] = useState('');
-  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState({id: true, password: true});
 
-  /**
-   * call when action login
-   *
-   */
-  const onLogin = () => {
-    if (id == '' || password == '') {
-      setSuccess({
-        ...success,
-        id: false,
-        password: false,
-      });
-    } else {
-      setLoading(true);
-      dispatch(
-        AuthActions.authentication(true, (response) => {
-          setLoading(false);
-          navigation.goBack();
-        }),
-      );
+  const [formValues, setFormValues] = useState({
+    username: {
+      value: '',
+      isValid: false,
+      message: 'Tài khoản/SDT không hợp lệ',
+      touched: false,
+    },
+    password: {
+      value: '',
+      isValid: true,
+      message: 'Mật khẩu không hợp lệ',
+      touched: false,
+    },
+  });
+
+  function checkValidByFieldAndValue(field, value) {
+    let test = {
+      username: regex.username.test(value),
+      password: true,
+    };
+    return test[field];
+  }
+
+  function checkFormValid(formValues) {
+    let isValid = true;
+    Object.keys(formValues).forEach((key) => {
+      if (!formValues[key].isValid) {
+        isValid = false;
+      }
+    });
+    return isValid;
+  }
+
+  function handleChangeField(field, value) {
+    let isValid = checkValidByFieldAndValue(field, value);
+    let newFormValues = {...formValues};
+    newFormValues[field] = {value: value, isValid: isValid};
+    setFormValues({...newFormValues});
+  }
+
+  function handleTouchedField(field) {
+    let newFormValues = {...formValues};
+    newFormValues[field].touched = true;
+    setFormValues({...newFormValues});
+  }
+
+  async function handleSignUp() {
+    await setError('');
+    // await setLoading(true);
+    console.log(`Handle signing`, formValues);
+    let isFormValid = checkFormValid(formValues);
+    if (isFormValid) {
+      let values = getFormValues(formValues);
+      await axios
+        .post(`/mobile-signin`, values)
+        .then((response) => {
+          console.log(response.data);
+          let data = response.data;
+          if (
+            data.status === 500 &&
+            data?.message === 'Tài khoản chưa xác minh'
+          ) {
+            navigation.navigate('OTPVerify', {
+              from: 'login',
+              ...values,
+            });
+          } else if (data.status === 200) {
+            let data = response?.data?.data;
+            dispatch(loginSuccess(data));
+          } else if (data?.status === 500) {
+            setError(data?.message);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      await setLoading(false);
     }
-  };
+  }
 
   return (
-    <SafeAreaView style={BaseStyle.safeAreaView} forceInset={{top: 'always'}}>
-      <Header
-        title={t('sign_in')}
-        renderLeft={() => {
-          return (
-            <Icon
-              name="arrow-left"
-              size={20}
-              color={colors.primary}
-              enableRTL={true}
-            />
-          );
-        }}
-        onPressLeft={() => {
-          navigation.goBack();
-        }}
-      />
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'android' ? 'height' : 'padding'}
-        keyboardVerticalOffset={offsetKeyboard}
-        style={{flex: 1}}>
-        <View style={styles.contain}>
+    <View style={{flex: 1}}>
+      <ImageBackground
+        source={Images.backgroundvg}
+        resizeMode="cover"
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+        }}>
+        <ScrollView
+          style={{flex: 1, paddingHorizontal: 24, paddingVertical: 48}}>
+          <Image
+            source={Images.vietganglogo}
+            style={{width: '100%', height: 128}}
+          />
+          <Text
+            style={{
+              fontSize: 24,
+              fontWeight: 'bold',
+              marginBottom: 12,
+              textAlign: 'center',
+            }}>
+            ĐĂNG NHẬP
+          </Text>
           <TextInput
-            onChangeText={(text) => setId(text)}
-            onFocus={() => {
-              setSuccess({
-                ...success,
-                id: true,
-              });
+            onChangeText={(text) => handleChangeField('username', text)}
+            onFocus={(e) => {
+              handleTouchedField('username');
             }}
-            placeholder={t('input_id')}
-            success={success.id}
-            value={id}
+            placeholder="Tài khoản"
+            success={formValues.username.isValid && formValues.username.touched}
+            value={formValues.username.value}
           />
           <TextInput
-            style={{marginTop: 10}}
-            onChangeText={(text) => setPassword(text)}
-            onFocus={() => {
-              setSuccess({
-                ...success,
-                password: true,
-              });
+            style={{marginTop: 12}}
+            onChangeText={(text) => handleChangeField('password', text)}
+            onFocus={(e) => {
+              handleTouchedField('password');
             }}
-            placeholder={t('input_password')}
+            placeholder="Mật khẩu"
+            success={formValues.password.isValid && formValues.password.touched}
+            value={formValues.password.value}
             secureTextEntry={true}
-            success={success.password}
-            value={password}
           />
+          {error ? (
+            <Text
+              style={{color: 'red', marginTop: 12, textAlign: 'center'}}>
+              {error?.toUpperCase()}
+            </Text>
+          ) : (
+            ''
+          )}
           <Button
             style={{marginTop: 20}}
             full
             loading={loading}
-            onPress={() => {
-              onLogin();
+            onPress={async () => {
+              await handleSignUp();
             }}>
-            {t('sign_in')}
+            ĐĂNG NHẬP
           </Button>
           <TouchableOpacity
-            onPress={() => navigation.navigate('ResetPassword')}>
-            <Text body1 grayColor style={{marginTop: 25}}>
-              {t('forgot_your_password')}
+            style={{width: '100%'}}
+            onPress={() => navigation.navigate('SignUp')}>
+            <Text
+              body1
+              grayColor
+              style={{
+                marginTop: 25,
+                textAlign: 'center',
+                color: colors.primary,
+              }}>
+              Đăng ký
             </Text>
           </TouchableOpacity>
-        </View>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+
+          <TouchableOpacity
+            style={{width: '100%'}}
+            onPress={() => navigation.navigate('SignUp')}>
+            <Text
+              body1
+              grayColor
+              style={{
+                marginTop: 25,
+                textAlign: 'center',
+                color: colors.primary,
+              }}>
+              Quên mật khẩu?
+            </Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </ImageBackground>
+    </View>
   );
 }

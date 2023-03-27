@@ -4,6 +4,8 @@
  */
 
 export const Images = {
+  backgroundvg: require("@assets/images/wall.png"),
+  vietganglogo: require("@assets/images/trip111.png"),
   logo: require("@assets/images/logo.png"),
   slide: require("@assets/images/slide.png"),
   avata1: require("@assets/images/avata-01.jpeg"),

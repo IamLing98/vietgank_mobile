@@ -172,7 +172,7 @@ export default function Home({navigation}) {
                 <View
                   style={[BaseStyle.textInput, {backgroundColor: colors.card}]}>
                   <Text body1 grayColor>
-                    {t('what_are_you_looking_for')}
+                    Tìm kiếm...
                   </Text>
                 </View>
               </TouchableOpacity>

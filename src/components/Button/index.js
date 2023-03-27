@@ -1,12 +1,17 @@
 import React from "react";
 import { TouchableOpacity, StyleSheet, ActivityIndicator } from "react-native";
-import { BaseColor, useTheme } from "@config";
+import { BaseColor, useTheme } from "../../config";
 import PropTypes from "prop-types";
 import { Text } from "@components";
 import styles from "./styles";
 
 export default function Button(props) {
-  const { colors } = useTheme();
+  const theme = useTheme();
+
+  const colors = theme.colors
+  
+  console.log(`color`, theme)
+
   const {
     style,
     styleText,

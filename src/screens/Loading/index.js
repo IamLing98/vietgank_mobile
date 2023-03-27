@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import {ActivityIndicator, View} from 'react-native';
-import {Images, BaseColor, useTheme} from '@config';
+import {Images, BaseColor, useTheme} from '../../config';
 import {Image, Text} from '@components';
 import styles from './styles';
 
@@ -10,7 +10,7 @@ export default function Loading({navigation}) {
   const onProcess = () => {
     setTimeout(() => {
       navigation.replace('Main');
-    }, 500);
+    }, 100);
   };
   useEffect(() => {
     onProcess();
@@ -18,10 +18,10 @@ export default function Loading({navigation}) {
 
   return (
     <View style={[styles.container, {backgroundColor: colors.primary}]}>
-      <Image source={Images.logo} style={styles.logo} resizeMode="contain" />
+      <Image source={Images.vietganglogo} style={styles.logo} resizeMode="contain" />
       <View style={styles.content}>
         <Text title1 whiteColor semibold>
-          Felix Travel
+          Vietgangz
         </Text>
         <ActivityIndicator
           size="large"

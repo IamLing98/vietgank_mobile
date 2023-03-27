@@ -50,7 +50,7 @@ export default function Header(props) {
           {renderLeft()}
         </TouchableOpacity>
       </View>
-      <View style={[styles.contentCenter, styleCenter]}>
+      <View style={[styles.contentCenter, styleCenter ]}>
         <Text headline numberOfLines={1}>
           {title}
         </Text>

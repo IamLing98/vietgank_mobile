@@ -11,6 +11,9 @@ import {useSelector} from 'react-redux';
 
 /* Main Stack Navigator */
 import Main from '../navigation/main';
+
+/* Main Stack Navigator */
+import AuthStack from './authStack';
 // /* Modal Screen only affect iOS */
 import Loading from '../screens/Loading';
 // import Filter from '@screens/Filter';
@@ -29,7 +32,10 @@ import Loading from '../screens/Loading';
 const RootStack = createStackNavigator();
 
 export default function Navigator() {
-  const storeLanguage = useSelector(state => state.application.language);
+  const storeLanguage = useSelector((state) => state.application.language);
+
+  const authReducer = useSelector((store) => store.auth);
+
   const {theme, colors} = useTheme();
   // const isDarkMode = useDarkMode();
   const isDarkMode = false;
@@ -41,59 +47,21 @@ export default function Navigator() {
   });
 
   useEffect(() => {
+    console.log(authReducer);
     i18n.use(initReactI18next).init({
       resources: BaseSetting.resourcesLanguage,
       lng: storeLanguage ?? BaseSetting.defaultLanguage,
       fallbackLng: BaseSetting.defaultLanguage,
     });
     SplashScreen?.hide();
-    StatusBar.setBackgroundColor(colors.primary, true);
-    StatusBar.setBarStyle(isDarkMode ? 'light-content' : 'dark-content', true);
+    StatusBar.setHidden(true);
+    // StatusBar.setBackgroundColor(colors.primary, true);
+    // StatusBar.setBarStyle(isDarkMode ? 'light-content' : 'dark-content', true);
   }, []);
 
   return (
-    // <DarkModeProvider>
-      <NavigationContainer theme={theme}>
-        <RootStack.Navigator
-          mode="modal"
-          headerMode="none"
-          initialRouteName="Loading">
-          <RootStack.Screen
-            name="Loading"
-            component={Loading}
-            options={{gestureEnabled: false}}
-          />
-         <RootStack.Screen name="Main" component={Main} />
-         {/*    <RootStack.Screen name="Filter" component={Filter} />
-          <RootStack.Screen name="FlightFilter" component={FlightFilter} />
-          <RootStack.Screen name="BusFilter" component={BusFilter} />
-          <RootStack.Screen name="Search" component={Search} />
-          <RootStack.Screen name="SearchHistory" component={SearchHistory} />
-          <RootStack.Screen name="PreviewImage" component={PreviewImage} />
-          <RootStack.Screen name="SelectBus" component={SelectBus} />
-          <RootStack.Screen name="SelectCruise" component={SelectCruise} />
-          <RootStack.Screen name="CruiseFilter" component={CruiseFilter} />
-          <RootStack.Screen name="EventFilter" component={EventFilter} /> */}
-          {/* <RootStack.Screen
-            name="SelectDarkOption"
-            component={SelectDarkOption}
-            gestureEnabled={false}
-            options={{
-              cardStyleInterpolator: forFade,
-              cardStyle: {backgroundColor: 'rgba(0, 0, 0, 0.5)'},
-            }}
-          /> */}
-          {/* <RootStack.Screen
-            name="SelectFontOption"
-            component={SelectFontOption}
-            gestureEnabled={false}
-            options={{
-              cardStyleInterpolator: forFade,
-              cardStyle: {backgroundColor: 'rgba(0, 0, 0, 0.5)'},
-            }}
-          /> */}
-        </RootStack.Navigator>
-      </NavigationContainer>
-    // </DarkModeProvider>
+    <NavigationContainer theme={theme}>
+      {authReducer?.login?.success ? <Main /> : <AuthStack />}
+    </NavigationContainer>
   );
 }

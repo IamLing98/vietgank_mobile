@@ -1,8 +1,8 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {useSelector} from 'react-redux';
-import {BaseColor, useTheme, useFont} from '@config';
+import {BaseColor, useTheme, useFont} from '../config';
 import {useTranslation} from 'react-i18next';
 import {Icon} from '@components';
 /* Stack Screen */
@@ -82,7 +82,8 @@ import Profile from '@screens/Profile';
 const MainStack = createStackNavigator();
 const BottomTab = createBottomTabNavigator();
 
-export default function Main() {
+export default function Main({navigation}) {
+  const authReducer = useSelector((store) => store.auth); 
   return (
     <MainStack.Navigator
       headerMode="none"
@@ -174,7 +175,7 @@ function BottomTabNavigator() {
   const {t} = useTranslation();
   const {colors} = useTheme();
   const font = useFont();
-  const auth = useSelector(state => state.auth);
+  const auth = useSelector((state) => state.auth);
   const login = auth.login.success;
   return (
     <BottomTab.Navigator
@@ -195,7 +196,8 @@ function BottomTabNavigator() {
         name="Home"
         component={Home}
         options={{
-          title: t('home'),
+          title: t('Trang chủ'),
+          headerShown: false,
           tabBarIcon: ({color}) => {
             return <Icon color={color} name="home" size={20} solid />;
           },
@@ -205,19 +207,9 @@ function BottomTabNavigator() {
         name="Booking"
         component={Booking}
         options={{
-          title: t('booking'),
+          title: 'Hoạt động',
           tabBarIcon: ({color}) => {
             return <Icon color={color} name="bookmark" size={20} solid />;
-          },
-        }}
-      />
-      <BottomTab.Screen
-        name="Messenger"
-        component={Messenger}
-        options={{
-          title: t('message'),
-          tabBarIcon: ({color}) => {
-            return <Icon solid color={color} name="envelope" size={20} solid />;
           },
         }}
       />
@@ -225,9 +217,19 @@ function BottomTabNavigator() {
         name="Post"
         component={Post}
         options={{
-          title: t('news'),
+          title: 'Ưu đãi',
           tabBarIcon: ({color}) => {
             return <Icon color={color} name="copy" size={20} solid />;
+          },
+        }}
+      />
+      <BottomTab.Screen
+        name="Messenger"
+        component={Messenger}
+        options={{
+          title: 'Tin nhắn',
+          tabBarIcon: ({color}) => {
+            return <Icon solid color={color} name="envelope" size={20} solid />;
           },
         }}
       />
@@ -235,7 +237,7 @@ function BottomTabNavigator() {
         name="Profile"
         component={login ? Profile : Walkthrough}
         options={{
-          title: t('account'),
+          title: 'Tài khoản',
           tabBarIcon: ({color}) => {
             return <Icon solid color={color} name="user-circle" size={20} />;
           },

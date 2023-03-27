@@ -225,7 +225,7 @@ export default function Search({navigation}) {
         <ScrollView contentContainerStyle={{padding: 20}}>
           <TextInput
             onChangeText={(text) => setKeyword(text)}
-            placeholder={t('what_are_you_looking_for')}
+            placeholder='Tìm kiếm...'
             value={keyword}
           />
           <BookingTime style={{marginTop: 15}} />
