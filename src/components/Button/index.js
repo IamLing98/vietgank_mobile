@@ -8,9 +8,7 @@ import styles from "./styles";
 export default function Button(props) {
   const theme = useTheme();
 
-  const colors = theme.colors
-  
-  console.log(`color`, theme)
+  const colors = theme.colors 
 
   const {
     style,

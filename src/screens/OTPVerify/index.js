@@ -1,73 +1,36 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useDispatch} from 'react-redux';
-import {AuthActions} from '@actions';
 import {
   View,
   TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
   ImageBackground,
   ScrollView,
   Image,
+  Pressable,
 } from 'react-native';
 import {BaseStyle, useTheme, Images} from '../../config';
-import {
-  Header,
-  SafeAreaView,
-  Icon,
-  Text,
-  Button,
-  TextInput,
-} from '../../components';
+import {Text, Button, TextInput} from '../../components';
 import styles from './styles';
-import {useTranslation} from 'react-i18next';
 
 import axios from 'axios';
-import {getFormValues, regex} from '../../utils/data.utils';
+import {camelToSnakeCase, getFormValues, regex} from '../../utils/data.utils';
 
-export default function SignIn({navigation}) {
+export default function OTPVerify({navigation, route}) {
   const {colors} = useTheme();
 
   const [error, setError] = useState('');
 
   const dispatch = useDispatch();
 
-  const offsetKeyboard = Platform.select({
-    ios: 0,
-    android: 20,
-  });
+  const [count, setCount] = useState(120);
 
   const [loading, setLoading] = useState(false);
 
   const [formValues, setFormValues] = useState({
-    username: {
-      value: 'linhdv71',
+    otp: {
+      value: '',
       isValid: false,
-      message: 'Tài khoản không hợp lệ',
-      touched: false,
-    },
-    email: {
-      value: 'vandoan1029i@gmail.com',
-      isValid: false,
-      message: 'Email không hợp lệ',
-      touched: false,
-    },
-    phoneNumber: {
-      value: '0964708429',
-      isValid: false,
-      message: 'SDT không hợp lệ',
-      touched: false,
-    },
-    password: {
-      value: 'Linh@12345',
-      isValid: false,
-      message: 'Mật khẩu không hợp lệ',
-      touched: false,
-    },
-    confirmPassword: {
-      value: 'Linh@12345',
-      isValid: false,
-      message: 'Mật khẩu không trùng khớp',
+      message: 'Mã xác thực khôg hợp lệ',
       touched: false,
     },
   });
@@ -81,10 +44,7 @@ export default function SignIn({navigation}) {
       }
     }
     let test = {
-      username: regex.username.test(value),
-      password: regex.password.test(value),
-      email: regex.email.test(value),
-      phoneNumber: regex.phoneNumber.test(value),
+      otp: regex.otp.test(value),
     };
     return test[field];
   }
@@ -118,19 +78,21 @@ export default function SignIn({navigation}) {
     setFormValues({...newFormValues});
   }
 
-  async function handleSignUp() {
+  async function handleVerify(username) {
     await setError('');
-    // await setLoading(true);
-    console.log(`Handle signing`, formValues);
+    // await setLoading(true); 
     let isFormValid = checkFormValid(formValues);
     if (isFormValid) {
       let values = getFormValues(formValues);
+      values = camelToSnakeCase(values);
+      console.log(`handleVerify`, values);
       await axios
-        .post('/mobile-signup', values)
+        .post(`/mobile-verify-auth/${username}`, values)
         .then((response) => {
           let data = response.data;
+          console.log(data)
           if (data?.status === 200) {
-            navigation.navigate('OTPVerify', {from: 'signup', ...values});
+            navigation.navigate('SignIn', {from: 'signup', ...values});
           } else {
             setError(data?.message);
           }
@@ -140,6 +102,42 @@ export default function SignIn({navigation}) {
         });
     }
   }
+
+  async function handleReGetOtp(username) {
+    await axios
+      .get(`/mobile-signup-resend-otp/${username}`)
+      .then((response) => {
+        let data = response.data;
+        console.log('ResponseL ', data);
+        if (data?.status === 200) {
+          setCount(120);
+        } else {
+          setError(data?.message);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  useEffect(() => {
+    let timerId;
+    if (!count <= 0) {
+      timerId = setInterval(() => {
+        setCount((prev) => prev - 1);
+      }, 1000);
+    }
+
+    return function cleanup() {
+      clearInterval(timerId);
+    };
+  }, [count]);
+
+  useEffect(()=>{
+    if(route?.params?.from === 'login'){
+      handleReGetOtp(route?.params?.username)
+    }
+  }, [route?.params?.from])
 
   return (
     <View style={{flex: 1}}>
@@ -163,117 +161,63 @@ export default function SignIn({navigation}) {
               marginBottom: 12,
               textAlign: 'center',
             }}>
-            ĐĂNG KÝ
+            XÁC THỰC ĐĂNG KÝ
           </Text>
           <TextInput
-            onChangeText={(text) => handleChangeField('username', text)}
+            onChangeText={(text) => handleChangeField('otp', text)}
             onFocus={(e) => {
-              handleTouchedField('username');
+              handleTouchedField('otp');
             }}
-            placeholder="Tài khoản"
-            success={
-              !formValues.username.isValid && formValues.username.touched
+            placeholder="Nhập mã xác thực nhận được trong email"
+            success={!formValues.otp.isValid && formValues.otp.touched}
+            value={formValues.otp.value}
+            maxLength={6}
+            keyboardType="numeric"
+            suffix={
+              count > 0 ? (
+                <Text
+                  style={{
+                    paddingHorizontal: 10,
+                    fontWeight: 'bold',
+                    color: 'black',
+                  }}>
+                  {count}
+                </Text>
+              ) : (
+                <Pressable
+                  onPress={(e) => {
+                    handleReGetOtp(route?.params?.username);
+                  }}>
+                  {({pressed}) => (
+                    <Text
+                      style={{
+                        paddingHorizontal: 10,
+                        fontWeight: 'bold',
+                        color: 'black',
+                      }}>
+                      Lấy mã
+                    </Text>
+                  )}
+                </Pressable>
+              )
             }
-            value={formValues.username.value}
           />
-          {!formValues.username.isValid && formValues.username.touched ? (
+          {!formValues.otp.isValid && formValues.otp.touched ? (
             <Text style={{color: 'red', marginTop: 0}}>
-              {formValues.username.message}
+              {formValues.otp.message}
             </Text>
           ) : (
             ''
           )}
-          <TextInput
-            style={{marginTop: 12}}
-            onChangeText={(text) => handleChangeField('email', text)}
-            onFocus={(e) => {
-              handleTouchedField('email');
-            }}
-            placeholder="Email"
-            success={formValues.email.isValid && formValues.email.touched}
-            value={formValues.email.value}
-          />
-          {!formValues.email.isValid && formValues.email.touched ? (
-            <Text style={{color: 'red', marginTop: 0}}>
-              {formValues.email.message}
-            </Text>
-          ) : (
-            ''
-          )}
-          <TextInput
-            style={{marginTop: 12}}
-            onChangeText={(text) => handleChangeField('phoneNumber', text)}
-            onFocus={(e) => {
-              handleTouchedField('phoneNumber');
-            }}
-            placeholder="Số điện thoại"
-            success={
-              formValues.phoneNumber.isValid && formValues.phoneNumber.touched
-            }
-            value={formValues.phoneNumber.value}
-          />
-          {!formValues.phoneNumber.isValid && formValues.phoneNumber.touched ? (
-            <Text style={{color: 'red', marginTop: 0}}>
-              {formValues.phoneNumber.message}
-            </Text>
-          ) : (
-            ''
-          )}
-          <TextInput
-            style={{marginTop: 12}}
-            onChangeText={(text) => handleChangeField('password', text)}
-            onFocus={(e) => {
-              handleTouchedField('password');
-            }}
-            placeholder="Mật khẩu"
-            success={formValues.password.isValid && formValues.password.touched}
-            value={formValues.password.value}
-            secureTextEntry={true}
-          />
-          {!formValues.password.isValid && formValues.password.touched ? (
-            <Text style={{color: 'red', marginTop: 0}}>
-              {formValues.password.message}
-            </Text>
-          ) : (
-            ''
-          )}
-          <TextInput
-            style={{marginTop: 12}}
-            onChangeText={(text) => handleChangeField('password', text)}
-            onFocus={(e) => {
-              handleTouchedField('confirmPassword');
-            }}
-            placeholder="Xác nhận mật khẩu"
-            success={
-              formValues.confirmPassword.isValid &&
-              formValues.confirmPassword.touched
-            }
-            value={formValues.confirmPassword.value}
-            secureTextEntry={true}
-          />
-          {!formValues.confirmPassword.isValid &&
-          formValues.confirmPassword.touched ? (
-            <Text style={{color: 'red', marginTop: 0}}>
-              {formValues.confirmPassword.message}
-            </Text>
-          ) : (
-            ''
-          )}
-          {error ? (
-            <Text style={{color: 'red', marginTop: 12, textAlign: 'center'}}>
-              {error?.toUpperCase()}
-            </Text>
-          ) : (
-            ''
-          )}
+
           <Button
             style={{marginTop: 20}}
             full
             loading={loading}
             onPress={async () => {
-              await handleSignUp();
+              await handleVerify(route?.params?.username);
             }}>
-            ĐĂNG KÝ
+            XÁC NHẬN
           </Button>
           <TouchableOpacity
             style={{width: '100%'}}
@@ -286,7 +230,7 @@ export default function SignIn({navigation}) {
                 textAlign: 'center',
                 color: colors.primary,
               }}>
-              Đã có tài khoản? Đăng nhập
+              Quay lại trang đăng nhập
             </Text>
           </TouchableOpacity>
         </ScrollView>

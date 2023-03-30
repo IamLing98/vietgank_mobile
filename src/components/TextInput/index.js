@@ -1,5 +1,5 @@
 import React from 'react';
-import {TextInput, View, I18nManager} from 'react-native';
+import {TextInput,Text, View, I18nManager, StyleSheet} from 'react-native';
 import PropTypes from 'prop-types';
 import {BaseStyle, BaseColor, useTheme} from '@config';
 
@@ -19,12 +19,30 @@ export default function Index(props) {
     textAlignVertical,
     icon,
     onSubmitEditing,
+    maxLength,
+    suffix
   } = props;
+
+  const styles = StyleSheet.create({
+    inputContainer: {
+      borderWidth: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: 'white',
+      marginHorizontal: 10,
+      borderRadius: 10
+    },
+    prefix: {
+      paddingHorizontal: 10,
+      fontWeight: 'bold',
+      color: 'black'
+    }
+  })
+
   return (
     <View style={[BaseStyle.textInput, {backgroundColor: cardColor}, style]}>
       <TextInput
         style={{
-          fontFamily: 'Raleway',
           flex: 1,
           height: '100%',
           textAlign: I18nManager.isRTL ? 'right' : 'left',
@@ -32,7 +50,7 @@ export default function Index(props) {
           paddingTop: 5,
           paddingBottom: 5,
         }}
-        onChangeText={text => onChangeText(text)}
+        onChangeText={(text) => onChangeText(text)}
         onFocus={() => onFocus()}
         autoCorrect={false}
         placeholder={placeholder}
@@ -44,8 +62,10 @@ export default function Index(props) {
         multiline={multiline}
         textAlignVertical={textAlignVertical}
         onSubmitEditing={onSubmitEditing}
+        maxLength={maxLength ? maxLength : 100}
       />
       {icon}
+      {suffix ? suffix : ''}
     </View>
   );
 }
@@ -67,7 +87,7 @@ Index.propTypes = {
 
 Index.defaultProps = {
   style: {},
-  onChangeText: text => {},
+  onChangeText: (text) => {},
   onFocus: () => {},
   placeholder: 'Placeholder',
   value: '',
