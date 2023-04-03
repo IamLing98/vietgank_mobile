@@ -1,17 +1,20 @@
-import * as actionTypes from "@actions/actionTypes";
-const initialState = {
-  login: {
-    success: false
-  }
-};
+import {createSlice} from '@reduxjs/toolkit';
 
-export default (state = initialState, action = {}) => {
-  switch (action.type) {
-    case actionTypes.LOGIN:
-      return {
-        login: action.data
-      };
-    default:
-      return state;
-  }
-};
+export const authSlice = createSlice({
+  name: 'counter',
+  initialState: {
+    login: {
+      success: false,
+    },
+  },
+  reducers: {
+    loginSuccess: (state, action) => {
+      state.login.success = true;
+    },
+  },
+});
+
+// Action creators are generated for each case reducer function
+export const {loginSuccess} = authSlice.actions;
+
+export default authSlice.reducer;

@@ -5,6 +5,7 @@ import {
   Animated,
   TouchableOpacity,
   FlatList,
+  Platform,
 } from 'react-native';
 import {
   Image,
@@ -15,31 +16,32 @@ import {
   Button,
   SafeAreaView,
   EventCard,
-} from '@components';
+} from '../../components';
 import {BaseStyle, Images, useTheme} from '@config';
 import * as Utils from '@utils';
 import styles from './styles';
 import {PromotionData, TourData, HotelData} from '@data';
 import {useTranslation} from 'react-i18next';
+import {SectionList} from 'react-native';
 
 export default function Home({navigation}) {
   const {t} = useTranslation();
   const {colors} = useTheme();
-  const [icons] = useState([
+  const [icons] = useState( [
     {
       icon: 'calendar-alt',
-      name: 'hotels',
+      name: 'Shopping',
       route: 'Hotel',
     },
     {
-      icon: 'map-marker-alt',
-      name: 'tours',
-      route: 'Tour',
+      icon: 'horse',
+      name: 'Vietgangz Horse',
+      route: 'VietgangzHorse',
     },
     {
-      icon: 'car-alt',
-      name: 'car',
-      route: 'OverViewCar',
+      icon: 'horse',
+      name: 'Vietgangz Horse',
+      route: 'Tour',
     },
     {
       icon: 'plane',
@@ -98,9 +100,10 @@ export default function Home({navigation}) {
   const renderIconService = () => {
     return (
       <FlatList
-        data={icons}
-        numColumns={4}
-        keyExtractor={(item, index) => index.toString()}
+        data={icons} 
+        horizontal
+        keyExtractor={(item, index) => index.toString()}  
+        showsHorizontalScrollIndicator={false}
         renderItem={({item}) => {
           return (
             <TouchableOpacity
@@ -111,15 +114,15 @@ export default function Home({navigation}) {
               }}>
               <View
                 style={[styles.iconContent, {backgroundColor: colors.card}]}>
-                <Icon name={item.icon} size={18} color={colors.primary} solid />
+                <Icon name={item.icon} size={24} color={colors.primary} solid />
               </View>
-              <Text footnote grayColor numberOfLines={1}>
-                {t(item.name)}
+              <Text footnote black numberOfLines={2}>
+               {item.name}
               </Text>
             </TouchableOpacity>
           );
         }}
-      />
+      /> 
     );
   };
 

@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import * as SplashScreen from 'expo-splash-screen';
-import {store, persistor} from './src/store';
+import store from './src/store';
 import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
 import Navigator from './src/navigation';
@@ -20,9 +20,9 @@ export default function App() {
 
   return (
     <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
+      {/* <PersistGate loading={null} persistor={persistor}> */}
         <Navigator />
-      </PersistGate>
+      {/* </PersistGate> */}
     </Provider>
   );
 }

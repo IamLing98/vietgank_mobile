@@ -8,9 +8,9 @@ import {
   ScrollView,
   Image,
 } from 'react-native';
+import {BaseStyle, useTheme, Images} from '../../config';
 import axios from 'axios';
 
-import {BaseStyle, useTheme, Images} from '../../config';
 import { 
   Text,
   Button,

@@ -206,12 +206,12 @@ export const DefaultTheme = {
 /**
  * Define list font use for whole application
  */
-export const FontSupport = ['Raleway', 'Roboto', 'Merriweather'];
+export const FontSupport = ['Roboto', 'Merriweather'];
 
 /**
  * Define font default use for whole application
  */
-export const DefaultFont = 'Raleway';
+export const DefaultFont = 'Roboto';
 
 /**
  * export theme and colors for application

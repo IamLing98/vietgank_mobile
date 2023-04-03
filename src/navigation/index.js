@@ -47,7 +47,6 @@ export default function Navigator() {
   });
 
   useEffect(() => {
-    console.log(authReducer);
     i18n.use(initReactI18next).init({
       resources: BaseSetting.resourcesLanguage,
       lng: storeLanguage ?? BaseSetting.defaultLanguage,

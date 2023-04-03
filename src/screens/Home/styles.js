@@ -52,15 +52,16 @@ export default StyleSheet.create({
   iconContent: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 64,
+    height: 64,
+    borderRadius: 32,
   },
   itemService: {
     alignItems: 'center',
     justifyContent: 'center',
     flex: 1,
     paddingTop: 10,
+    marginLeft:24
   },
   promotionItem: {
     width: Utils.scaleWithPixel(200),
