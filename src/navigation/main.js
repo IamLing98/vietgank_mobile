@@ -77,10 +77,13 @@ import Home from '../screens/Home';
 import Booking from '../screens/Booking';
 import Messenger from '../screens/Messenger';
 import Post from '../screens/Post';
-import Profile from '../screens/Profile';
+import Profile from '../screens/Profile'; 
+
 import VietgangzHorse from '../screens/VietgangHorse';
+import VietgangzHorseServiceList from '../screens/VietgangHorse/ServiceList';
 
 const MainStack = createStackNavigator();
+
 const BottomTab = createBottomTabNavigator();
 
 export default function Main({navigation}) {
@@ -93,7 +96,9 @@ export default function Main({navigation}) {
         name="BottomTabNavigator"
         component={BottomTabNavigator}
       />
+      {/* Vietgangz Horse */}
       <MainStack.Screen name="VietgangzHorse" component={VietgangzHorse} />
+      <MainStack.Screen name="VietgangzHorseServices" component={VietgangzHorseServiceList} />
       <MainStack.Screen name="Profile1" component={Profile1} />
       <MainStack.Screen name="Profile2" component={Profile2} />
       <MainStack.Screen name="Profile3" component={Profile3} />

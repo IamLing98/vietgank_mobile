@@ -22,53 +22,10 @@ const defaultUrl =
 import {loginSuccess} from '../../reducers/auth';
 import {getFormValues, regex} from '../../utils/data.utils';
 
-export default function VietgangzHorse({navigation}) {
-  const {height, width} = useWindowDimensions();
+export default function SignIn({navigation, route}) {
+  const {height, width} = useWindowDimensions(); 
 
-  const [tenants, setTenants] = useState([
-    {
-      name: 'Vietgangz Horse Sài Gòn',
-      services: [
-        {
-          name: 'Trải nghiệm tham quan tiệc BBQ',
-          description: `<p>html</p>`,
-        },
-        {
-          name: 'Trải nghiệm tham quan trong ngày',
-        },
-        {
-          name: 'Trải nghiệm qua đêm trong lều',
-        },
-        {
-          name: 'Tiệc cưới ngoài trời',
-        },
-        {
-          name: 'Trải nghiệm tham quan tiệc BBQ',
-        },
-      ],
-    },
-    {
-      name: 'Vietgangz Horse Hà Nội',
-    },
-    {
-      name: 'Vietgangz Horse Đà Nẵng',
-    },
-    {
-      name: 'Vietgangz Horse Thanh Hóa',
-    },
-  ]);
-
-  function getTenants() {
-    axios
-      .get('/api/booking?booking_type_code=HORSE_CLUB')
-      .then((response) => {
-        console.log(response?.data);
-        setTenants([...response?.data?.data]);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }
+  const services = route?.services 
 
   const styles = StyleSheet.create({
     scrollView: {
@@ -79,8 +36,7 @@ export default function VietgangzHorse({navigation}) {
       fontSize: 42,
     },
     itemWrapper: {
-      marginBottom: 24,
-      borderRadius: 16,
+      marginRight: 36,
     },
     itemList: {
       flex: 0.3,
@@ -88,14 +44,15 @@ export default function VietgangzHorse({navigation}) {
       borderColor: '#dfe1e5',
     },
     itemText: {
-      padding: 10,
-      fontSize: 14,
-      color: 'black',
+      fontSize: 52,
       fontWeight: 'bold',
+      bottom: 0,
+      textAlign: 'right',
+      position: 'absolute',
     },
     itemImage: {
-      height: 156,
-      width: width,
+      height: height - 256,
+      width: width - 128,
     },
     guideText: { 
       marginTop: 36,
@@ -104,10 +61,16 @@ export default function VietgangzHorse({navigation}) {
       marginVertical: 12,
     },
   });
-  ``;
+
   const [error, setError] = useState('');
 
   const dispatch = useDispatch();
+
+  const offsetKeyboard = Platform.select({
+    ios: 0,
+    android: 20,
+  });
+
   const [loading, setLoading] = useState(false);
 
   const [formValues, setFormValues] = useState({
@@ -189,15 +152,7 @@ export default function VietgangzHorse({navigation}) {
       await setLoading(false);
     }
   }
-
-  function handleClickTenantItem(item) { 
-    navigation.navigate("VietgangzHorseServices", item)
-  }
-
-  useEffect(() => {
-    getTenants();
-  }, []);
-
+ 
   return (
     <View style={{flex: 1}}>
       <ImageBackground
@@ -211,33 +166,32 @@ export default function VietgangzHorse({navigation}) {
             VIETGANGZ HORSE CLUB
           </Text>
           <Text title3 bold style={styles.subText}>
-            Chọn điểm đến:
+            Các dịch vụ:
           </Text>
           <ScrollView
-            showsHorizontalScrollIndicator={false}
-            showsVerticalScrollIndicator={false}
+            horizontal={true}
             style={{height: '85%', flex: 1, marginTop: 12}}>
-            {tenants?.map((item, index) => {
-              console.log(item);
+            {services?.map((item, index) => {
               return (
-                <View underlayColor="#DDDDDD">
+                <TouchableOpacity
+                  underlayColor="#DDDDDD"
+                  onPress={(e) => {
+                    handleClickTenantItem(item);
+                  }}>
                   <View style={styles.itemWrapper}>
                     <View style={styles.itemList}>
-                      <Image
+                      <ImageBackground
                         style={styles.itemImage}
+                        imageStyle={{borderRadius: 16}}
                         // src={item?.booking_info?.thumbnail | defaultUrl}
-                        src={defaultUrl}></Image>
-                      <TouchableOpacity
-                        onPress={(e) => {
-                          handleClickTenantItem(item);
-                        }}>
-                        <Text title3 style={styles.itemText}> 
-                          {item?.booking_info?.name}
+                        source={{uri: defaultUrl}}>
+                        <Text title3 whiteColor style={styles.itemText}>
+                         {item?.service_info?.name}
                         </Text>
-                      </TouchableOpacity>
+                      </ImageBackground>
                     </View>
                   </View>
-                </View>
+                </TouchableOpacity>
               );
             })}
           </ScrollView>

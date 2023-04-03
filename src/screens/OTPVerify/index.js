@@ -84,8 +84,7 @@ export default function OTPVerify({navigation, route}) {
     let isFormValid = checkFormValid(formValues);
     if (isFormValid) {
       let values = getFormValues(formValues);
-      values = camelToSnakeCase(values);
-      console.log(`handleVerify`, values);
+      values = camelToSnakeCase(values); 
       await axios
         .post(`/mobile-verify-auth/${username}`, values)
         .then((response) => {

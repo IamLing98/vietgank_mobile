@@ -1,9 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import {BASE_URL, TOKEN} from './constants';
+import {BASE_URL, ACCESS_TOKEN} from './constants';
 
 function axiosInterceptor() {
-  let token = AsyncStorage.getItem('ACCESS_TOKEN');
+  let token = AsyncStorage.getItem(ACCESS_TOKEN);
   axios.defaults.baseURL = BASE_URL;
   axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   axios.interceptors.request.use(

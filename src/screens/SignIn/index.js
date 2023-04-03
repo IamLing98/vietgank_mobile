@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
-import {useDispatch} from 'react-redux'; 
+import {useDispatch} from 'react-redux';
 import {
   View,
-  TouchableOpacity, 
+  TouchableOpacity,
   Platform,
   ImageBackground,
   ScrollView,
@@ -11,13 +11,9 @@ import {
 import axios from 'axios';
 
 import {BaseStyle, useTheme, Images} from '../../config';
-import { 
-  Text,
-  Button,
-  TextInput,
-} from '../../components'; 
+import {Text, Button, TextInput} from '../../components';
 
-import {loginSuccess} from '../../reducers/auth' 
+import {loginSuccess} from '../../reducers/auth';
 import {getFormValues, regex} from '../../utils/data.utils';
 
 export default function SignIn({navigation}) {
@@ -89,22 +85,23 @@ export default function SignIn({navigation}) {
       let values = getFormValues(formValues);
       await axios
         .post(`/mobile-signin`, values)
-        .then((response) => {
+        .then(async (response) => {
           console.log(response.data);
           let data = response.data;
           if (
             data.status === 500 &&
             data?.message === 'Tài khoản chưa xác minh'
           ) {
-            navigation.navigate('OTPVerify', {
+            await navigation.navigate('OTPVerify', {
               from: 'login',
               ...values,
             });
           } else if (data.status === 200) {
             let data = response?.data?.data;
-            dispatch(loginSuccess(data));
+            await dispatch(loginSuccess(data));
+            await navigation.navigate('BottomTabNavigator');
           } else if (data?.status === 500) {
-            setError(data?.message);
+            await setError(data?.message);
           }
         })
         .catch((error) => {
@@ -159,8 +156,7 @@ export default function SignIn({navigation}) {
             secureTextEntry={true}
           />
           {error ? (
-            <Text
-              style={{color: 'red', marginTop: 12, textAlign: 'center'}}>
+            <Text style={{color: 'red', marginTop: 12, textAlign: 'center'}}>
               {error?.toUpperCase()}
             </Text>
           ) : (
