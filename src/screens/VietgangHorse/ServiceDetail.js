@@ -12,22 +12,20 @@ import {
   SafeAreaView,
   useWindowDimensions,
 } from 'react-native';
+import RenderHtml from 'react-native-render-html';
 import {BaseStyle, useTheme, Images} from '../../config';
 import axios from 'axios';
 import {Text, Button, TextInput} from '../../components';
 
-const defaultUrl =
-  'https://res.cloudinary.com/linkdoan/image/upload/v1680506857/vietgangz/horse_club_item_yksdzz.jpg';
-
 import {loginSuccess} from '../../reducers/auth';
-import {getFormValues, regex} from '../../utils/data.utils';
+import {getFormValues, regex} from '../../utils/data.utils'; 
 
-export default function VietgangHorseServices({navigation, route}) {
+export default function VietgangzHorseServicesDetail({navigation, route}) {
   const {height, width} = useWindowDimensions();
 
-  const services = route?.params?.services;
-   const tenant = route?.params;
-  console.log(services);
+  const [service, setService] = useState();
+
+  const [tenant, setTenant] = useState();
 
   const styles = StyleSheet.create({
     scrollView: {
@@ -51,7 +49,7 @@ export default function VietgangHorseServices({navigation, route}) {
       bottom: 0,
       textAlign: 'left',
       position: 'absolute',
-      margin:12
+      margin: 12,
     },
     itemImage: {
       height: height - 256,
@@ -69,12 +67,30 @@ export default function VietgangHorseServices({navigation, route}) {
 
   const dispatch = useDispatch();
 
-  const offsetKeyboard = Platform.select({
-    ios: 0,
-    android: 20,
+  const [loading, setLoading] = useState(false);
+
+  const [formValues, setFormValues] = useState({
+    username: {
+      value: 'linhdv71',
+      isValid: false,
+      message: 'Tài khoản/SDT không hợp lệ',
+      touched: false,
+    },
+    password: {
+      value: 'Linh@12345',
+      isValid: true,
+      message: 'Mật khẩu không hợp lệ',
+      touched: false,
+    },
   });
 
-  const [loading, setLoading] = useState(false); 
+  function checkValidByFieldAndValue(field, value) {
+    let test = {
+      username: regex.username.test(value),
+      password: true,
+    };
+    return test[field];
+  }
 
   function checkFormValid(formValues) {
     let isValid = true;
@@ -84,7 +100,20 @@ export default function VietgangHorseServices({navigation, route}) {
       }
     });
     return isValid;
-  } 
+  }
+
+  function handleChangeField(field, value) {
+    let isValid = checkValidByFieldAndValue(field, value);
+    let newFormValues = {...formValues};
+    newFormValues[field] = {value: value, isValid: isValid};
+    setFormValues({...newFormValues});
+  }
+
+  function handleTouchedField(field) {
+    let newFormValues = {...formValues};
+    newFormValues[field].touched = true;
+    setFormValues({...newFormValues});
+  }
 
   async function handleSignUp() {
     await setError('');
@@ -120,9 +149,12 @@ export default function VietgangHorseServices({navigation, route}) {
     }
   }
 
-  function handleClickService(item){
-    navigation.navigate("VietgangzHorseServicesDetail", {tenant:tenant, service:item})
-  }
+  useEffect(() => { 
+    const service = route?.params?.service;
+    const tenant = route?.params?.tenant;
+    setService(service);
+    setTenant(tenant);
+  }, []);
 
   return (
     <View style={{flex: 1}}>
@@ -137,35 +169,40 @@ export default function VietgangHorseServices({navigation, route}) {
             Chào mừng bạn đến với {tenant?.booking_info?.name?.toUpperCase()}
           </Text>
           <Text title3 bold style={styles.subText}>
-            Dịch vụ:
+            {service?.service_info?.name}
           </Text>
           <ScrollView
             horizontal={true}
-            style={{height: '85%', flex: 1, marginTop: 12}}>
-            {services?.map((item, index) => {
-              return (
-                <TouchableOpacity
-                  underlayColor="#DDDDDD"
-                  onPress={(e) => {
-                    handleClickService(item);
-                  }}>
-                  <View style={styles.itemWrapper}>
-                    <View style={styles.itemList}>
-                      <ImageBackground
-                        style={styles.itemImage}
-                        imageStyle={{borderRadius: 16}}
-                        // src={item?.booking_info?.thumbnail | defaultUrl}
-                        source={{uri: defaultUrl}}>
-                        <Text whiteColor style={styles.itemText}>
-                          {item?.service_info?.name}
-                        </Text>
-                      </ImageBackground>
-                    </View>
-                  </View>
-                </TouchableOpacity>
-              );
-            })}
+            style={{
+              height: '75%',
+              flex: 1,
+            }}>
+            <RenderHtml
+              contentWidth={width}
+              source={{html: service?.service_info?.description}}
+            />
           </ScrollView>
+          <TouchableOpacity
+            style={{width: '100%', backgroundColor: 'black'}}
+            onPress={() =>
+              navigation?.navigate('VietgangzHorseServiceBooking', {
+                service: service,
+                tenant: tenant,
+              })
+            }>
+            <Text
+              body1
+              grayColor
+              style={{
+                height: 36,
+                marginTop: 12,
+                textAlign: 'center',
+                // color: colors.primary,
+                color: 'white',
+              }}>
+              ĐẶT LỊCH NGAY
+            </Text>
+          </TouchableOpacity>
         </View>
       </ImageBackground>
     </View>

@@ -1,6 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {BASE_URL, ACCESS_TOKEN} from './constants';
+import store from '../store'
+import { logout } from '../reducers/auth';
 
 function axiosInterceptor() {
   let token = AsyncStorage.getItem(ACCESS_TOKEN);

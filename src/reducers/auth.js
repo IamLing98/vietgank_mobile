@@ -10,6 +10,7 @@ export const authSlice = createSlice({
     login: {
       success: false,
     },
+    userData: {},
   },
   reducers: {
     loginSuccess: (state, action) => {
@@ -19,13 +20,17 @@ export const authSlice = createSlice({
         action?.payload?.access_token,
       );
 
-      let token = action?.payload?.access_token; 
+      let token = action?.payload?.access_token;
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      state.userData = action?.payload?.user_info;
+    },
+    logout: (state) => {
+      state.login.success = false;
     },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const {loginSuccess} = authSlice.actions;
+export const {loginSuccess, logout} = authSlice.actions;
 
 export default authSlice.reducer;

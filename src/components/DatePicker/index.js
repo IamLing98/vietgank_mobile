@@ -7,6 +7,7 @@ import {Calendar} from 'react-native-calendars';
 import Modal from 'react-native-modal';
 import {BaseColor, useTheme, DefaultFont} from '@config';
 import {useTranslation} from 'react-i18next';
+import moment from 'moment'
 
 export default function DatePicker(props) {
   const {t} = useTranslation();
@@ -15,14 +16,6 @@ export default function DatePicker(props) {
   const [selected, setSelected] = useState(props.selected);
   const [markedDates, setMarkedDates] = useState({});
   const [modalVisible, setModalVisible] = useState(false);
-  const [renderCalendar, setRenderCalendar] = useState(true);
-
-  useEffect(() => {
-    setRenderCalendar(false);
-    setTimeout(() => {
-      setRenderCalendar(true);
-    }, 250);
-  }, [colors.card]);
 
   useEffect(() => {
     let marked = {};
@@ -34,7 +27,7 @@ export default function DatePicker(props) {
     setMarkedDates(marked);
   }, []);
 
-  const setDaySelected = selected => {
+  const setDaySelected = (selected) => {
     let marked = {};
     marked[selected] = {
       selected: true,
@@ -60,50 +53,48 @@ export default function DatePicker(props) {
         backdropTransitionInTiming={600}
         backdropTransitionOutTiming={600}>
         <View style={[styles.contentCalendar, {backgroundColor: colors.card}]}>
-          {renderCalendar && (
-            <Calendar
-              style={{
-                borderRadius: 8,
-                backgroundColor: colors.card,
-              }}
-              renderArrow={direction => {
-                return (
-                  <Icon
-                    name={direction == 'left' ? 'angle-left' : 'angle-right'}
-                    size={14}
-                    color={colors.primary}
-                    enableRTL={true}
-                  />
-                );
-              }}
-              markedDates={markedDates}
-              current={selected}
-              minDate={minDate}
-              maxDate={maxDate}
-              onDayPress={day => setDaySelected(day.dateString)}
-              monthFormat={'dd-MM-yyyy'}
-              theme={{
-                calendarBackground: colors.card,
-                textSectionTitleColor: colors.text,
-                selectedDayBackgroundColor: colors.primary,
-                selectedDayTextColor: '#ffffff',
-                todayTextColor: colors.primary,
-                dayTextColor: colors.text,
-                textDisabledColor: BaseColor.grayColor,
-                dotColor: colors.primary,
-                selectedDotColor: '#ffffff',
-                arrowColor: colors.primary,
-                monthTextColor: colors.text,
-                textDayFontFamily: DefaultFont,
-                textMonthFontFamily: DefaultFont,
-                textDayHeaderFontFamily: DefaultFont,
-                textMonthFontWeight: 'bold',
-                textDayFontSize: 14,
-                textMonthFontSize: 16,
-                textDayHeaderFontSize: 14,
-              }}
-            />
-          )}
+          <Calendar
+            style={{
+              borderRadius: 8,
+              backgroundColor: colors.card,
+            }}
+            renderArrow={(direction) => {
+              return (
+                <Icon
+                  name={direction == 'left' ? 'angle-left' : 'angle-right'}
+                  size={14}
+                  color={colors.primary}
+                  enableRTL={true}
+                />
+              );
+            }}
+            markedDates={markedDates}
+            current={selected}
+            minDate={minDate}
+            maxDate={maxDate}
+            onDayPress={(day) => setDaySelected(day.dateString)}
+            monthFormat={'dd-MM-yyyy'}
+            theme={{
+              calendarBackground: colors.card,
+              textSectionTitleColor: colors.text,
+              selectedDayBackgroundColor: colors.primary,
+              selectedDayTextColor: '#ffffff',
+              todayTextColor: colors.primary,
+              dayTextColor: colors.text,
+              textDisabledColor: BaseColor.grayColor,
+              dotColor: colors.primary,
+              selectedDotColor: '#ffffff',
+              arrowColor: colors.primary,
+              monthTextColor: colors.text,
+              textDayFontFamily: DefaultFont,
+              textMonthFontFamily: DefaultFont,
+              textDayHeaderFontFamily: DefaultFont,
+              textMonthFontWeight: 'bold',
+              textDayFontSize: 14,
+              textMonthFontSize: 16,
+              textDayHeaderFontSize: 14,
+            }}
+          />
           <View style={styles.contentActionCalendar}>
             <TouchableOpacity
               onPress={() => {
@@ -111,7 +102,7 @@ export default function DatePicker(props) {
                 setSelected(props.selected);
                 onCancel();
               }}>
-              <Text body1>{t('cancel')}</Text>
+              <Text body1>{t('Đóng')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
@@ -119,7 +110,7 @@ export default function DatePicker(props) {
                 onChange(selected);
               }}>
               <Text body1 primaryColor>
-                {t('done')}
+                {t('Chọn')}
               </Text>
             </TouchableOpacity>
           </View>
@@ -132,7 +123,7 @@ export default function DatePicker(props) {
           {label}
         </Text>
         <Text headline semibold numberOfLines={1}>
-          {selected}
+          {moment(selected, 'YYYY-MM-DD').format('DD/MM/YYYY')} 
         </Text>
       </TouchableOpacity>
     </View>

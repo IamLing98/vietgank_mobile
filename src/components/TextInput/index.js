@@ -50,13 +50,14 @@ export default function Index(props) {
           paddingTop: 5,
           paddingBottom: 5,
         }}
+        type
         onChangeText={(text) => onChangeText(text)}
         onFocus={() => onFocus()}
         autoCorrect={false}
         placeholder={placeholder}
-        placeholderTextColor={success ? BaseColor.grayColor : colors.primary}
+        placeholderTextColor={ colors.primary}
         secureTextEntry={secureTextEntry}
-        value={value}
+        value={value} 
         selectionColor={colors.primary}
         keyboardType={keyboardType}
         multiline={multiline}

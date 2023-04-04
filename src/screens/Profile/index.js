@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {View, ScrollView, TouchableOpacity} from 'react-native';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {AuthActions} from '@actions';
 import {BaseStyle, useTheme} from '@config';
 import {
@@ -15,29 +15,26 @@ import {
 import styles from './styles';
 import {UserData} from '@data';
 import {useTranslation} from 'react-i18next';
+import {logout} from '../../reducers/auth';
 
 export default function Profile({navigation}) {
   const {colors} = useTheme();
   const {t} = useTranslation();
 
   const [loading, setLoading] = useState(false);
-  const [userData] = useState(UserData[0]);
+  const userData = useSelector((state) => state?.auth?.userData);
+
   const dispatch = useDispatch();
 
-  /**
-   * @description Simple logout with Redux
-   * @author Passion UI <passionui.com>
-   * @date 2019-08-03
-   */
   const onLogOut = () => {
     setLoading(true);
-    dispatch(AuthActions.authentication(false, response => {}));
+    dispatch(logout());
   };
 
   return (
     <SafeAreaView style={BaseStyle.safeAreaView} forceInset={{top: 'always'}}>
       <Header
-        title={t('profile')}
+        title={'Thông tin cá nhân'}
         renderRight={() => {
           return <Icon name="bell" size={24} color={colors.primary} />;
         }}
@@ -48,17 +45,13 @@ export default function Profile({navigation}) {
       <ScrollView>
         <View style={styles.contain}>
           <ProfileDetail
-            image={userData.image}
-            textFirst={userData.name}
-            point={userData.point}
+            image={'https://avatars.githubusercontent.com/u/42459014?v=4'}
+            textFirst={userData.username}
+            point={userData.point ? userData.point : 0}
             textSecond={userData.address}
             textThird={userData.id}
             onPress={() => navigation.navigate('ProfileExanple')}
-          />
-          <ProfilePerformance
-            data={userData.performance}
-            style={{marginTop: 20, marginBottom: 20}}
-          />
+          /> 
           <TouchableOpacity
             style={[
               styles.profileItem,
@@ -67,7 +60,7 @@ export default function Profile({navigation}) {
             onPress={() => {
               navigation.navigate('ProfileEdit');
             }}>
-            <Text body1>{t('edit_profile')}</Text>
+            <Text body1>Cập nhật thông tin</Text>
             <Icon
               name="angle-right"
               size={18}
@@ -84,7 +77,7 @@ export default function Profile({navigation}) {
             onPress={() => {
               navigation.navigate('ChangePassword');
             }}>
-            <Text body1>{t('change_password')}</Text>
+            <Text body1>Đổi mật khẩu</Text>
             <Icon
               name="angle-right"
               size={18}
@@ -92,67 +85,13 @@ export default function Profile({navigation}) {
               style={{marginLeft: 5}}
               enableRTL={true}
             />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.profileItem,
-              {borderBottomColor: colors.border, borderBottomWidth: 1},
-            ]}
-            onPress={() => {
-              navigation.navigate('Currency');
-            }}>
-            <Text body1>{t('currency')}</Text>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}>
-              <Text body1 grayColor>
-                USD
-              </Text>
-              <Icon
-                name="angle-right"
-                size={18}
-                color={colors.primary}
-                style={{marginLeft: 5}}
-                enableRTL={true}
-              />
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.profileItem,
-              {borderBottomColor: colors.border, borderBottomWidth: 1},
-            ]}
-            onPress={() => navigation.navigate('MyPaymentMethod')}>
-            <Text body1>{t('my_cards')}</Text>
-            <Icon
-              name="angle-right"
-              size={18}
-              color={colors.primary}
-              style={{marginLeft: 5}}
-              enableRTL={true}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.profileItem}
-            onPress={() => {
-              navigation.navigate('Setting');
-            }}>
-            <Text body1>{t('setting')}</Text>
-            <Icon
-              name="angle-right"
-              size={18}
-              color={colors.primary}
-              style={{marginLeft: 5}}
-              enableRTL={true}
-            />
-          </TouchableOpacity>
+          </TouchableOpacity>  
+           
         </View>
       </ScrollView>
       <View style={{paddingHorizontal: 20, paddingVertical: 15}}>
         <Button full loading={loading} onPress={() => onLogOut()}>
-          {t('sign_out')}
+          Đăng xuất
         </Button>
       </View>
     </SafeAreaView>

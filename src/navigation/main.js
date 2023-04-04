@@ -77,17 +77,20 @@ import Home from '../screens/Home';
 import Booking from '../screens/Booking';
 import Messenger from '../screens/Messenger';
 import Post from '../screens/Post';
-import Profile from '../screens/Profile'; 
+import Profile from '../screens/Profile';
 
 import VietgangzHorse from '../screens/VietgangHorse';
 import VietgangzHorseServiceList from '../screens/VietgangHorse/ServiceList';
+import VietgangzHorseServicesDetail from '../screens/VietgangHorse/ServiceDetail';
+import VietgangzHorseServiceBooking from '../screens/VietgangHorse/Booking';
+import VietgangzHorseServiceBookingDetail from '../screens/VietgangHorse/BookingDetail';
 
 const MainStack = createStackNavigator();
 
 const BottomTab = createBottomTabNavigator();
 
 export default function Main({navigation}) {
-  const authReducer = useSelector((store) => store.auth); 
+  const authReducer = useSelector((store) => store.auth);
   return (
     <MainStack.Navigator
       headerMode="none"
@@ -97,8 +100,38 @@ export default function Main({navigation}) {
         component={BottomTabNavigator}
       />
       {/* Vietgangz Horse */}
-      <MainStack.Screen name="VietgangzHorse" component={VietgangzHorse} />
-      <MainStack.Screen name="VietgangzHorseServices" component={VietgangzHorseServiceList} />
+      <MainStack.Screen
+        name="VietgangzHorse"
+        options={{
+          gestureEnabled: true,
+        }}
+        component={VietgangzHorse}
+      />
+      <MainStack.Screen
+        name="VietgangzHorseServices"
+        component={VietgangzHorseServiceList}
+      />
+      <MainStack.Screen
+        options={{
+          gestureEnabled: true,
+        }}
+        name="VietgangzHorseServicesDetail"
+        component={VietgangzHorseServicesDetail}
+      />
+      <MainStack.Screen
+        options={{
+          gestureEnabled: true,
+        }}
+        name="VietgangzHorseServiceBooking"
+        component={VietgangzHorseServiceBooking}
+      />
+      <MainStack.Screen
+        options={{
+          gestureEnabled: true,
+        }}
+        name="VietgangzHorseServiceBookingDetail"
+        component={VietgangzHorseServiceBookingDetail}
+      />
       <MainStack.Screen name="Profile1" component={Profile1} />
       <MainStack.Screen name="Profile2" component={Profile2} />
       <MainStack.Screen name="Profile3" component={Profile3} />
@@ -196,7 +229,6 @@ function BottomTabNavigator() {
         style: {borderTopWidth: 1},
         labelStyle: {
           fontSize: 12,
-          fontFamily: font,
         },
       }}>
       <BottomTab.Screen
